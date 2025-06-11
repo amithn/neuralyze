@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html ng-app="neuralyzeApp">
+<head>
+  <meta charset="utf-8" />
+  <title>Neuralyze Dashboard</title>
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .login-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f8f9fa;
+    }
+    .login-card {
+      width: 350px;
+      padding: 2rem;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      background: white;
+    }
+    .sidebar {
+      background-color: #343a40;
+      color: white;
+      min-height: 100vh;
+      width: 220px;
+      padding-top: 1rem;
+    }
+    .sidebar h3 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+    .sidebar a {
+      color: white;
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+      text-decoration: none;
+    }
+    .main {
+      padding: 20px;
+      flex-grow: 1;
+    }
+    .layout {
+      display: flex;
+    }
+    .stat-card {
+      background: #e9ecef;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 0.5rem;
+    }
+    .stat-label {
+      font-size: 1.1rem;
+      color: #495057;
+    }
+    .classification-card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div ng-controller="MainController">
+    <div ng-if="!isLoggedIn" class="login-container">
+      <div class="login-card">
+        <h2 class="text-primary text-center mb-4">Neuralyze</h2>
+        <form ng-submit="login()">
+          <div class="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              class="form-control"
+              ng-model="credentials.username"
+              required
+              autocomplete="username"
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              class="form-control"
+              ng-model="credentials.password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div ng-if="isLoggedIn" class="layout">
+      <nav class="sidebar">
+        <h3>Neuralyze</h3>
+        <a href="#!/dashboard">Dashboard</a>
+        <a href="#!/classification">Classification</a>
+        <a href="#!/redaction">Redacted</a>
+        <a href="#!/profile">Profile</a>
+        <a href="#!/settings">Settings</a>
+        <a href="" ng-click="logout()">Logout</a>
+      </nav>
+
+      <main class="main" ng-view></main>
+    </div>
+  </div>
+
+  <script>
+    var app = angular.module("neuralyzeApp", ["ngRoute"]);
+
+    app.config(function ($routeProvider, $locationProvider) {
+      $routeProvider
+        .when("/dashboard", {
+          templateUrl: "dashboard.html",
+          controller: "DashboardController",
+        })
+        .when("/classification", {
+          templateUrl: "classification.html",
+        })
+        .when("/redaction", {
+          templateUrl: "redaction.html",
+        })
+        .when("/profile", {
+          template: "<h2>User Profile</h2><p>Profile settings here.</p>",
+        })
+        .when("/settings", {
+          template: "<h2>Settings</h2><p>Application settings here.</p>",
+        })
+        .otherwise({
+          redirectTo: "/",
+        });
+
+      $locationProvider.hashPrefix("!");
+    });
+
+    app.controller("MainController", function ($scope) {
+      $scope.isLoggedIn = false;
+      $scope.credentials = {};
+
+      $scope.login = function () {
+        if ($scope.credentials.username && $scope.credentials.password) {
+          $scope.isLoggedIn = true;
+          location.hash = "#!/dashboard";
+        }
+      };
+
+      $scope.logout = function () {
+        $scope.isLoggedIn = false;
+        $scope.credentials = {};
+        location.hash = "";
+      };
+    });
+
+    app.controller("DashboardController", function ($scope) {
+      $scope.stats = {
+        requests: 250,
+        processed: 180,
+        redacted: 75,
+      };
+    });
+  </script>
+</body>
+</html>
