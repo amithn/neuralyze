@@ -1,13 +1,53 @@
-<h2>Classification</h2>
-<div class="classification-card">
-  <h5>Google Drive</h5>
-  <button class="btn btn-outline-primary btn-sm">Browse Drive</button>
-</div>
-<div class="classification-card">
-  <h5>SharePoint</h5>
-  <button class="btn btn-outline-secondary btn-sm">Browse SharePoint</button>
-</div>
-<div class="classification-card">
-  <h5>Local Files</h5>
-  <input type="file" class="form-control-file" />
-</div>
+<!DOCTYPE html>
+<html ng-app>
+<head>
+  <meta charset="utf-8">
+  <title>Folder Upload Viewer</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .text-break {
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body ng-controller="ClassificationController" class="p-4">
+
+  <h2>Upload Folder</h2>
+
+  <div class="mb-3">
+    <input type="file"
+           class="form-control-file"
+           webkitdirectory
+           directory
+           multiple
+           onchange="angular.element(this).scope().handleFiles(this.files)">
+  </div>
+
+  <button class="btn btn-primary mb-3" ng-click="uploadFilesOneByOne()" ng-disabled="files.length === 0">
+    Start Upload
+  </button>
+
+  <table class="table table-bordered table-sm align-middle" ng-if="files.length > 0">
+    <thead>
+      <tr>
+        <th style="width: 40px;">#</th>
+        <th class="text-break">File Path</th>
+        <th style="width: 80px;">Size (KB)</th>
+        <th style="width: 100px;">Type</th>
+        <th>Status</th>
+        <th>Classification</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="file in files">
+        <td>{{ $index + 1 }}</td>
+        <td class="text-break">{{ file.path }}</td>
+        <td class="text-truncate">{{ file.sizeKB }}</td>
+        <td class="text-truncate">{{ file.type }}</td>
+        <td>{{ file.status }}</td>
+        <td>{{ file.classification || '-' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
