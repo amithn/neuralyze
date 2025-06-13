@@ -4,11 +4,11 @@ var app = angular.module("neuralyzeApp", ["ngRoute"]);
     app.config(function ($routeProvider, $locationProvider) {
       $routeProvider
         .when("/dashboard", {
-          templateUrl: "dashboard.html",
+          templateUrl: "static/dashboard.html",
           controller: "DashboardController",
         })
         .when("/classification", {
-          templateUrl: "classification.html",
+          templateUrl: "static/classification.html",
           controller: "ClassificationController",
         })
         .when("/redaction", {
@@ -21,7 +21,7 @@ var app = angular.module("neuralyzeApp", ["ngRoute"]);
           template: "<h2>Settings</h2><p>Application settings here.</p>",
         })
         .otherwise({
-          redirectTo: "/",
+          redirectTo: "/dashboard",
         });
 
       $locationProvider.hashPrefix("!");
